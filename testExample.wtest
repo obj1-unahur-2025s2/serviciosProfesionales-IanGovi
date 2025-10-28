@@ -1,9 +1,47 @@
-import example.pepita
-
+import profesionalesYEmpresas.*
 describe "group of tests for pepita" {
+  // UNIVERSIDADES
+  const uniSanMartin = new Universidad(provincia = "BuenosAires", honorariosPorHoraRecomendado = 3500, totalRecaudado = 0)
+  const uniRosario = new Universidad(provincia = "SantaFe", honorariosPorHoraRecomendado = 2800, totalRecaudado = 0)
+  const uniCorrientes = new Universidad(provincia = "Corrientes", honorariosPorHoraRecomendado = 4200, totalRecaudado = 0)
+  const uniHurlingham = new Universidad(provincia = "BuenosAires", honorariosPorHoraRecomendado = 8800, totalRecaudado = 0)
 
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+  // PROFESIONALES
+  const juana = new ProfesionalVinculado(universidad = uniRosario)
+  const melina = new ProfesionalLitoral(universidad = uniCorrientes)
+  const rocio = new ProfesionalLibre(universidad = uniHurlingham, honorariosPorHoraDeTrabajo = 5000, provinciasParaTrabajar = #{"SantaFe", "Cordoba", "BuenosAires"}, totalRecaudado = 0)
+  const luciana = new ProfesionalLibre(universidad = uniRosario, honorariosPorHoraDeTrabajo = 3200, provinciasParaTrabajar = #{"SantaFe", "EntreRios"}, totalRecaudado = 0)
+
+  //EMPRESA
+  const empresa1 = new Empresa(honorarioReferencia = 3500)
+
+  //INITIALIZE
+  method initialize() {
+    empresa1.agregarProfesional(juana)
+    empresa1.agregarProfesional(melina)
+    empresa1.agregarProfesional(rocio)
+    empresa1.agregarProfesional(luciana)
+  }
+  test "dos de sus profesionales estudiaron en Rosario, uno en Hurlingham, ninguno (o sea cero) en San Martín." {
+    assert.equals(2, empresa1.cuantosprofEstudiaronEn(uniRosario))
+    assert.equals(1, empresa1.cuantosprofEstudiaronEn(uniHurlingham))
+    assert.equals(0, empresa1.cuantosprofEstudiaronEn(uniSanMartin))
+  }
+
+  test "como profesionales caros, solamente a Rocío. ¡OJO! el método no va a devolver a Rocío, va a devolver una colección que tiene un solo elemento, que es Rocío." {
+    assert.equals(#{rocio}, empresa1.profesionalesCaro())
+  }
+
+  test "como universidades formadoras, a las de Rosario, Corrientes y Hurlingham." {
+    assert.equals(#{uniRosario, uniCorrientes, uniHurlingham}, empresa1.universidadesFormadoras())
+  }
+
+  test "como profesional mas barato esta Juana" {
+    assert.equals(juana, empresa1.profesionalMasBarato())
+  }
+
+  test "Esta empresa es de gente acotada" {
+    assert.that(empresa1.esDeGenteAcotado())
   }
 
 }
